@@ -1,16 +1,16 @@
 # Super-Mario
 
-## Initial Settings
-- Από την στιγμή που έχεις κάνει αντιγραφή (fork) το [αποθετήριο](https://github.com/ioniodi/Super-Mario) του παιχνιδιού, θα πρέπει να έχει κατέβει στο προσωπικό σου github αποθετήριο ο [κώδικας του παιχνιδιού](index.html), ο φάκελος [assets](/assets/) με τα αντικείμενα (πίστες, εικόνες) και ο φάκελος [audio](/audio/) με τους ήχους που θα χρησιμοποιήσεις στο παιχνίδι σου.
+Στο παρόν κλαδί - branch βρίσκεται ο τελικός κώδικας του παιχνιδιού. 
 
-- Ενεργοποίησε το Github Pages στα setting του προσωπικού σου repository και *άλλαξε το λινκ στην κορυφή του αποθετηρίου σου ώστε να δείχνει στην σελίδα του παιχνιδιού σου.*
-![ScreenShot](1.png)
+Παρακάτω παραθέτω τη Δικτυογραφία που χρησιμοποίησα για την επέκταση του παιχνιδιού.
 
-- Στο [index.html](index.html) άλλαξε το ioniodi με το δικό σου username.
-![ScreenShot](2.png)
+## Δικτυογραφία
+- Link για την εικόνα (sprite) των coins: https://scratch.mit.edu/projects/49905542/
+- Link για την εικόνα (sprite) των ζωών: https://github.com/DimitrisTria/Super-Mario/blob/gh-pages/assets/sprites/lives.png 
+- Link για το Tileset απ' όπου πήρα τα sprites για τους 2 εχθρούς που πρόσθεσα στο παιχνίδι: https://www.spriters-resource.com/custom_edited/mariocustoms/sheet/69705/?source=genre
 
-## Resources
 - [Phaser Tutorial](http://phaser.io/learn)
 - [Official Phaser Tutorials](https://phaser.io/learn/official-tutorials)
 - [Phaser Examples](http://phaser.io/examples)
 - [Javascript tutorial](http://www.w3schools.com/js/)
+
