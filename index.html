@@ -24,18 +24,18 @@ body {
 
 			//  We need this because the assets are on github pages
 			//  Remove the next 2 lines if running locally
-			//this.load.baseURL = 'https://randomperson19.github.io/Super-Mario/';
-			//this.load.crossOrigin = 'anonymous';
+			this.load.baseURL = 'https://randomperson19.github.io/Super-Mario/';
+			this.load.crossOrigin = 'anonymous';
 
 			this.load.spritesheet('tiles', 'assets/super_mario_tiles.png', 16,
 					16);
 			this.load.spritesheet('goomba', 'assets/goomba.png', 16, 16);
-      //loads the sprite for the Enemy2
+      			//loads the sprite for the Enemy2
 			this.load.spritesheet('Enemy2', 'assets/Enemy2.png', 16, 16);
 			//loads the sprite for the Enemy3
 			this.load.spritesheet('Enemy3', 'assets/Enemy3.png', 16, 16);
 			//loads the sprite that is displaying the lives
-		  this.load.spritesheet('lives', 'assets/lives.png', 49, 8, 6);
+		  	this.load.spritesheet('lives', 'assets/lives.png', 49, 8, 6);
 			//loads the sprite that is displaying the score
 			this.load.spritesheet('score','assets/score.png',16,9);
 			//loads the changed mario sprite
@@ -139,7 +139,7 @@ body {
 			cursors = game.input.keyboard.createCursorKeys();
 
 
-      //creates the sprite for the lives
+      			//creates the sprite for the lives
 			lives = 5;
 			efforts = game.add.sprite(0, 0, 'lives');
 			efforts.frame = 5 - lives;
@@ -148,11 +148,11 @@ body {
 			//creates the score sprite and the text for displaying the score
 			score = game.add.sprite(70, 0, 'score');
 			score.scale.setTo(0.8, 0.8);
-	    score.fixedToCamera = true;
+	    		score.fixedToCamera = true;
 			scoreView = game.add.text(80,-3,'Score: ',{ font: "10px", fill: "#000" });
 			score = 0;
 			scoreView.text = score;
-	    scoreView.fixedToCamera = true;
+	    		scoreView.fixedToCamera = true;
 
 
 			//creates audio
@@ -185,7 +185,7 @@ body {
 			game.physics.arcade.overlap(player, coins, coinOverlap);
 
 			//updates the score text that displays the current score
-       scoreView.text = score;
+       			scoreView.text = score;
 
 			if (player.body.enable) {
 				player.body.velocity.x = 0;
@@ -240,7 +240,7 @@ body {
 				efforts.frame = efforts.frame - 1;
 			}
    }
-   //added 5 score points for each goomba overlap
+   		//added 5 score points for each goomba overlap
 		function goombaOverlap(player, goomba) {
 			if (player.body.touching.down) {
 				goombaKillAudio.play();
