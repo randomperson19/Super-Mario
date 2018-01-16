@@ -10,7 +10,7 @@ body {
 	background-color: #000;
 }
 </style>
-<script src="phaser.js"></script>
+<script type ="text/javascript" src="phaser.js"></script>
 </head>
 <body>
 	<script type="text/javascript">
@@ -24,12 +24,16 @@ body {
 
 			//  We need this because the assets are on github pages
 			//  Remove the next 2 lines if running locally
-			this.load.baseURL = 'https://randomperson19.github.io/Super-Mario/';
-			this.load.crossOrigin = 'anonymous';
+			//this.load.baseURL = 'https://randomperson19.github.io/Super-Mario/';
+			//this.load.crossOrigin = 'anonymous';
 
 			this.load.spritesheet('tiles', 'assets/super_mario_tiles.png', 16,
 					16);
 			this.load.spritesheet('goomba', 'assets/goomba.png', 16, 16);
+      //loads the sprite for the Enemy2
+			this.load.spritesheet('Enemy2', 'assets/Enemy2.png', 16, 16);
+			//loads the sprite for the Enemy3
+			this.load.spritesheet('Enemy3', 'assets/Enemy3.png', 16, 16);
 			//loads the sprite that is displaying the lives
 		  this.load.spritesheet('lives', 'assets/lives.png', 49, 8, 6);
 			//loads the sprite that is displaying the score
@@ -48,6 +52,8 @@ body {
 					this.load.audio('background_audio','audio/bgm.mp3');
 					this.load.audio('goomba_collision_audio','audio/door.wav');
 					this.load.audio('goomba_kill_audio','audio/stomp.wav');
+					this.load.audio('Enemy2_kill_audio','audio/stomp2.wav');
+					this.load.audio('Enemy3_kill_audio','audio/stomp3.wav');
 					this.load.audio('game_over_audio','audio/key.wav');
 		}
 
@@ -57,6 +63,7 @@ body {
 		var lives = 0;
 		//var timeInvincibleLasts = 0; //bonus timer
 		var efforts;
+		var teleport = false;
 
 
 
@@ -95,6 +102,30 @@ body {
 			goombas.setAll('body.velocity.x', -20);
 			goombas.setAll('body.gravity.y', 500);
 
+			//creates the Enemy2 sprite
+			Enemies2 = game.add.group();
+			Enemies2.enableBody = true;
+			map.createFromTiles(3, null, 'Enemy2', 'stuff', Enemies2);
+			Enemies2.callAll('animations.add', 'animations', 'walk', [ 0, 1 ],
+					2, true);
+			Enemies2.callAll('animations.play', 'animations', 'walk');
+			Enemies2.setAll('body.bounce.x', 1);
+			Enemies2.setAll('body.velocity.x', -20);
+			Enemies2.setAll('body.gravity.y', 500);
+
+			//creates the Enemy3 sprite
+			Enemies3 = game.add.group();
+			Enemies3.enableBody = true;
+			map.createFromTiles(9, null, 'Enemy3', 'stuff', Enemies3);
+			Enemies3.callAll('animations.add', 'animations', 'walk', [ 0, 1 ],
+					2, true);
+			Enemies3.callAll('animations.play', 'animations', 'walk');
+			Enemies3.setAll('body.bounce.x', 1);
+			Enemies3.setAll('body.velocity.x', -20);
+			Enemies3.setAll('body.gravity.y', 500);
+
+
+
 			player = game.add.sprite(16, game.world.height - 48, 'mario');
 			game.physics.arcade.enable(player);
 			player.body.gravity.y = 370;
@@ -131,6 +162,8 @@ body {
 			goombaCollisionAudio = game.add.audio('goomba_collision_audio');
 			gameOverAudio = game.add.audio('game_over_audio');
 			goombaKillAudio = game.add.audio('goomba_kill_audio');
+			Enemy2KillAudio = game.add.audio('Enemy2_kill_audio');
+			Enemy3KillAudio = game.add.audio('Enemy3_kill_audio');
 			backgroundAudio.loop = true;
 			backgroundAudio.play();
 
@@ -139,8 +172,16 @@ body {
 
 		function update() {
 			game.physics.arcade.collide(player, layer);
+
 			game.physics.arcade.collide(goombas, layer);
 			game.physics.arcade.overlap(player, goombas, goombaOverlap);
+
+			game.physics.arcade.collide(Enemies2, layer);
+			game.physics.arcade.overlap(player, Enemies2, Enemy2Overlap);
+
+			game.physics.arcade.collide(Enemies3, layer);
+			game.physics.arcade.overlap(player, Enemies3, Enemy3Overlap);
+
 			game.physics.arcade.overlap(player, coins, coinOverlap);
 
 			//updates the score text that displays the current score
@@ -177,6 +218,15 @@ body {
 					else
 						player.frame = 12;
 				}
+
+				if (score >= 200 && lives == 5 && !game.teleport) {  //teleports the player at the end of the map providing that lives = 5 and score >= 200
+            			player.body.position.x = 2013;
+            			player.body.position.y = 0;
+            			game.teleport = true;
+            	}
+
+
+
 			}
 		}
 
@@ -207,13 +257,13 @@ body {
 					efforts.frame = efforts.frame - 1;
 				}
 
-			} else {      //modified so when the player collides with a goomba he is losing a life and concurrently moving the player's sprite position a little bit back after the collision
+			} else {      //modified so when the player collides with an enemy he is losing a life and concurrently moving the player's sprite position a little bit back after the collision
 				goombaCollisionAudio.play();
 				lives = lives - 1;
 				efforts.frame = 5 - lives;
 				player.body.position.x = player.body.position.x - 30;
 				player.body.position.y = player.body.position.y - 10;
-				  if(lives <= 0){                         //when the lives reach 0 the game pauses and prints the following alerts
+				  if(lives <= 0){                    //when the lives reach 0 the game pauses and prints the following alerts
 					backgroundAudio.stop();
 					gameOverAudio.play();
 					game.paused = true;
@@ -222,6 +272,73 @@ body {
 				}
 			}
 		}
+
+		function Enemy2Overlap(player, Enemy2) {
+			if (player.body.touching.down) {
+				Enemy2KillAudio.play();
+				Enemy2.animations.stop();
+				Enemy2.frame = 2;
+				Enemy2.body.enable = false;
+				player.body.velocity.y = -80;
+				game.time.events.add(Phaser.Timer.SECOND, function() {
+					Enemy2.kill();
+				});
+				score = score + 5;
+				if (score == 400 || score == 405 && lives <= 4){
+					lives = lives + 1;
+					efforts.frame = efforts.frame - 1;
+				}
+
+			} else {      //modified so when the player collides with an enemy he is losing a life and concurrently moving the player's sprite position a little bit back after the collision
+				goombaCollisionAudio.play();
+				lives = lives - 1;
+				efforts.frame = 5 - lives;
+				player.body.position.x = player.body.position.x - 30;
+				player.body.position.y = player.body.position.y - 10;
+				  if(lives <= 0){                    //when the lives reach 0 the game pauses and prints the following alerts
+					backgroundAudio.stop();
+					gameOverAudio.play();
+					game.paused = true;
+					alert("Game Over");
+					alert("Press F5 to restart the game");
+				}
+			}
+		}
+
+
+		function Enemy3Overlap(player, Enemy3) {
+			if (player.body.touching.down) {
+				Enemy3KillAudio.play();
+				Enemy3.animations.stop();
+				Enemy3.frame = 2;
+				Enemy3.body.enable = false;
+				player.body.velocity.y = -80;
+				game.time.events.add(Phaser.Timer.SECOND, function() {
+					Enemy3.kill();
+				});
+				score = score + 5;
+				if (score == 400 || score == 405 && lives <= 4){
+					lives = lives + 1;
+					efforts.frame = efforts.frame - 1;
+				}
+
+			} else {      //modified so when the player collides with an enemy he is losing a life and concurrently moving the player's sprite position a little bit back after the collision
+				goombaCollisionAudio.play();
+				lives = lives - 1;
+				efforts.frame = 5 - lives;
+				player.body.position.x = player.body.position.x - 30;
+				player.body.position.y = player.body.position.y - 10;
+				  if(lives <= 0){                    //when the lives reach 0 the game pauses and prints the following alerts
+					backgroundAudio.stop();
+					gameOverAudio.play();
+					game.paused = true;
+					alert("Game Over");
+					alert("Press F5 to restart the game");
+				}
+			}
+		}
+
+
 
 
 
